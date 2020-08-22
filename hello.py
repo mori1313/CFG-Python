@@ -1,65 +1,88 @@
 import random
 import requests
 
-def chosen_pokemon():
-    chosen_url = 'https://pokeapi.co/api/v2/pokemon/{}/'.format(my_pokemon_name)
-    chosen_response = requests.get(chosen_url)
-    chosen_pokemon_info = chosen_response.json()
+my_score = 0
+computer_score = 0
 
-    return {
-        'name': chosen_pokemon_info['name'],
-        'id': chosen_pokemon_info['id'],
-        'height': chosen_pokemon_info['height'],
-        'weight': chosen_pokemon_info['weight'],
-    }
+stat_options = ["id","height","weight"]
 
-def random_pokemon():
-    pokemon_number = random.randint(1, 151)
-    url = 'https://pokeapi.co/api/v2/pokemon/{}/'.format(pokemon_number)
-    response = requests.get(url)
-    pokemon = response.json()
-    return {
-        'name': pokemon['name'],
-        'id': pokemon['id'],
-        'height': pokemon['height'],
-        'weight': pokemon['weight'],    
-    }
+for games in range(5):
 
-opponent_pokemon = random_pokemon()
+    def chosen_pokemon():
+        chosen_url = 'https://pokeapi.co/api/v2/pokemon/{}/'.format(my_pokemon_name)
+        chosen_response = requests.get(chosen_url)
+        chosen_pokemon_info = chosen_response.json()
 
-pokemon_hand = []
-for _ in range(5):
-    pokemon_number = random.randint(1, 151)
-    url = 'https://pokeapi.co/api/v2/pokemon/{}/'.format(pokemon_number)
-    response = requests.get(url)
-    pokemon = response.json()
-    pokemon_hand.append(pokemon['name'])
+        return {
+            'name': chosen_pokemon_info['name'],
+            'id': chosen_pokemon_info['id'],
+            'height': chosen_pokemon_info['height'],
+            'weight': chosen_pokemon_info['weight'],
+        }
 
-print("CHOOSE YOUR FIGHTER. You have been given:")
-print(*pokemon_hand, sep="\n")
+    def random_pokemon():
+        pokemon_number = random.randint(1, 151)
+        url = 'https://pokeapi.co/api/v2/pokemon/{}/'.format(pokemon_number)
+        response = requests.get(url)
+        pokemon = response.json()
+        return {
+            'name': pokemon['name'],
+            'id': pokemon['id'],
+            'height': pokemon['height'],
+            'weight': pokemon['weight'],    
+        }
 
-while 1:
-    my_pokemon_name = input("Which Pokemon would you like to select?")
+    opponent_pokemon = random_pokemon()
 
-    if my_pokemon_name in pokemon_hand:
-        my_pokemon = chosen_pokemon()
-        print("Great,you have chosen: {}".format(my_pokemon_name))
-        break
+    pokemon_hand = []
+    for _ in range(5):
+        pokemon_number = random.randint(1, 151)
+        url = 'https://pokeapi.co/api/v2/pokemon/{}/'.format(pokemon_number)
+        response = requests.get(url)
+        pokemon = response.json()
+        pokemon_hand.append(pokemon['name'])
+
+    print("CHOOSE YOUR FIGHTER. You have been given:")
+    print(*pokemon_hand, sep="\n")
+
+    while 1:
+        my_pokemon_name = input("Which Pokemon would you like to select?")
+
+        if my_pokemon_name in pokemon_hand:
+            my_pokemon = chosen_pokemon()
+            print("Great,you have chosen: {}".format(my_pokemon_name))
+            break
+        else:
+            print("Sorry, that pokemon is not an option, please choose another!")
+
+
+    print('The opponent chose {}'.format(opponent_pokemon['name']))
+
+    while 1:
+        stat_choice = input("Which stat would you like to use? (id,height,weight)")
+
+        if stat_choice in stat_options:
+            my_stat = my_pokemon[stat_choice]
+            opponent_stat = opponent_pokemon[stat_choice]
+            break
+        else:
+            print("Sorry, that pokemon is not an option, please choose another!")
+
+
+
+    if my_stat > opponent_stat:
+        my_score+=1
+        print("You Win this round! The opponents {} is {} but your's is {}.".format(stat_choice,opponent_stat,my_stat))
+    elif my_stat < opponent_stat:
+        computer_score+=1
+        print("You Lose this round! The opponents {} is {} but your's is {}.".format(stat_choice,opponent_stat,my_stat))
     else:
-        print("Sorry, that pokemon is not an option, please choose another!")
+        print("It's a draw! Both you and the opponent have a {} of {}.".format(stat_choice,my_stat))
 
+    print("The overall scores are \n You: {} Opponent: {}".format(my_score,computer_score))
 
-print('The opponent chose {}'.format(opponent_pokemon['name']))
-
-stat_choice = input("Which stat would you like to use? (id,height,weight)")
-
-my_stat = my_pokemon[stat_choice]
-opponent_stat = opponent_pokemon[stat_choice]
-
-if my_stat > opponent_stat:
-    print("You Win! The opponents {} is {} but your's is {}.".format(stat_choice,opponent_stat,my_stat))
-elif my_stat < opponent_stat:
-    print("You Lose! The opponents {} is {} but your's is {}.".format(stat_choice,opponent_stat,my_stat))
-else:
-    print("It's a draw! Both you and the opponent have a {} of {}.".format(stat_choice,my_stat))
+if my_score > computer_score:
+    print("Congratulations you won!!! In the end you scored {} and your opponent scored {}".format(my_score,computer_score))
+elif my_score < computer_score:
+    print("Sorry, you lost!!! In the end you scored {} and your opponent scored {}. Better luck next time!".format(my_score,computer_score))
 
