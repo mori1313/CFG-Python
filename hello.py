@@ -6,7 +6,8 @@ computer_score = 0
 
 stat_options = ["id","height","weight"]
 
-for games in range(5):
+games = 0
+while games < 5:
 
     def chosen_pokemon():
         chosen_url = 'https://pokeapi.co/api/v2/pokemon/{}/'.format(my_pokemon_name)
@@ -21,29 +22,51 @@ for games in range(5):
         }
 
     def random_pokemon():
-        pokemon_number = random.randint(1, 151)
-        url = 'https://pokeapi.co/api/v2/pokemon/{}/'.format(pokemon_number)
-        response = requests.get(url)
-        pokemon = response.json()
+        opp_pokemon_number = random.randint(1, 151)
+        url = 'https://pokeapi.co/api/v2/pokemon/{}/'.format(opp_pokemon_number)
+        opp_response = requests.get(url)
+        opp_pokemon = opp_response.json()
         return {
-            'name': pokemon['name'],
-            'id': pokemon['id'],
-            'height': pokemon['height'],
-            'weight': pokemon['weight'],    
+            'name': opp_pokemon['name'],
+            'id': opp_pokemon['id'],
+            'height': opp_pokemon['height'],
+            'weight': opp_pokemon['weight'],   
         }
 
     opponent_pokemon = random_pokemon()
 
-    pokemon_hand = []
-    for _ in range(5):
-        pokemon_number = random.randint(1, 151)
-        url = 'https://pokeapi.co/api/v2/pokemon/{}/'.format(pokemon_number)
-        response = requests.get(url)
-        pokemon = response.json()
-        pokemon_hand.append(pokemon['name'])
+    if games == 0:
+        pokemon_hand = []
+        cards = 0
+        while cards < 5 :
+            pokemon_number = random.randint(1, 151)
+            url = 'https://pokeapi.co/api/v2/pokemon/{}/'.format(pokemon_number)
+            response = requests.get(url)
+            pokemon = response.json()
 
-    print("CHOOSE YOUR FIGHTER. You have been given:")
-    print(*pokemon_hand, sep="\n")
+            if pokemon['name'] not in pokemon_hand and pokemon['name'] != opponent_pokemon['name']:
+                pokemon_hand.append(pokemon['name'])
+                cards+=1
+
+        print("CHOOSE YOUR FIGHTER. You have been given:")
+        print(*pokemon_hand, sep="\n")
+    else:
+        pokemon_hand.remove(my_pokemon_name)
+        cards = 4
+        while cards < 5 :
+            pokemon_number = random.randint(1, 151)
+            url = 'https://pokeapi.co/api/v2/pokemon/{}/'.format(pokemon_number)
+            response = requests.get(url)
+            pokemon = response.json()
+
+            if pokemon['name'] not in pokemon_hand and pokemon['name'] != opponent_pokemon['name']:
+                pokemon_hand.append(pokemon['name'])
+                cards+=1
+
+        print("CHOOSE YOUR FIGHTER. Your new hand is:")
+        print(*pokemon_hand, sep="\n")
+
+        
 
     while 1:
         my_pokemon_name = input("Which Pokemon would you like to select?")
@@ -80,6 +103,8 @@ for games in range(5):
         print("It's a draw! Both you and the opponent have a {} of {}.".format(stat_choice,my_stat))
 
     print("The overall scores are \n You: {} Opponent: {}".format(my_score,computer_score))
+    games+=1
+
 
 if my_score > computer_score:
     print("Congratulations you won!!! In the end you scored {} and your opponent scored {}".format(my_score,computer_score))
