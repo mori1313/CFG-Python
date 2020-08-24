@@ -291,7 +291,7 @@ elif player_mode == "multiplayer":
                 print("Congratulations {} you won!!! In the end you scored {} and {} scored {}. \n Better luck next time {}!".format(p2_name,p2_score,p1_name,p1_score, p1_name))
                 break
             else:
-                print("It's a draw!!! In the end you both scored {}.".format(p1_score))
+                print("It's a draw!!!")
                 break
 else:
     "Sorry that's not an option, please refresh and try again!"       
